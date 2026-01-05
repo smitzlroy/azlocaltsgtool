@@ -18,7 +18,14 @@ When you hit an error during Azure Local deployment or AKS Arc operations, you n
 
 **Prerequisites:** PowerShell 7.0+
 
-### Option 1: Install from Source
+### Install from PowerShell Gallery
+
+```powershell
+Install-Module -Name AzLocalTSGTool -Repository PSGallery -Scope CurrentUser
+Import-Module AzLocalTSGTool
+```
+
+### Install from Source
 
 ```powershell
 # Clone the repo
@@ -31,11 +38,6 @@ cd azlocaltsgtool
 
 # Load the module
 Import-Module AzLocalTSGTool
-```
-
-### Option 2: Direct Install (Coming Soon)
-```powershell
-Install-Module AzLocalTSGTool -Scope CurrentUser
 ```
 
 ## Quick Start

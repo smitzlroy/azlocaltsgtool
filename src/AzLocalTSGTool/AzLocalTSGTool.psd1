@@ -1,6 +1,6 @@
 ﻿@{
     RootModule        = 'AzLocalTSGTool.psm1'
-    ModuleVersion     = '0.2.0'
+    ModuleVersion     = '0.2.1'
     GUID              = '7a3e5c8f-9d1b-4e2a-8f7c-6b5d4a3e2f1c'
     Author            = 'AzLocalTSGTool Contributors'
     CompanyName       = 'Community'
@@ -22,7 +22,7 @@
             Tags         = @('Azure', 'AzureLocal', 'AKS', 'AzureArc', 'Troubleshooting', 'TSG', 'Supportability')
             LicenseUri   = 'https://github.com/smitzlroy/azlocaltsgtool/blob/main/LICENSE'
             ProjectUri   = 'https://github.com/smitzlroy/azlocaltsgtool'
-            ReleaseNotes = 'v0.2.0: Complete fix steps displayed with no truncation. Improved summaries from Overview/Symptoms sections. Clickable URLs. Filtered out filler text.'
+            ReleaseNotes = 'v0.2.1: Full guide link moved to top for better context. Complete fix steps with meaningful summaries. Clickable URLs.'
         }
     }
 }

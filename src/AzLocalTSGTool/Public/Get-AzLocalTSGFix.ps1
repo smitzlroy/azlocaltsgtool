@@ -86,7 +86,7 @@ function Get-AzLocalTSGFix {
     Write-Verbose "Searching $($indexEntries.Count) indexed documents..."
 
     # Score and rank candidates
-    $results = Invoke-ScoreCandidates -QueryTokens $queryTokens -IndexEntries $indexEntries -Top $Top
+    $results = @(Invoke-ScoreCandidates -QueryTokens $queryTokens -IndexEntries $indexEntries -Top $Top)
 
     if ($results.Count -eq 0) {
         Write-Warning "No matching issues found."

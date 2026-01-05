@@ -88,11 +88,10 @@ function Invoke-FuzzyScore {
     # Jaro-Winkler prefix bonus
     $prefix = 0
     $maxPrefix = 4
-    for ($i = 0; $i -lt [Math]::Min($len1, $len2, $maxPrefix); $i++) {
+    for ($i = 0; $i -lt [Math]::Min([Math]::Min($len1, $len2), $maxPrefix); $i++) {
         if ($String1[$i] -eq $String2[$i]) {
             $prefix++
-        }
-        else {
+        } else {
             break
         }
     }

@@ -58,8 +58,8 @@ function Invoke-ScoreCandidates {
         # Medium-value: token overlap (Jaccard)
         $entryTokens = $entry.Tokens
         if ($entryTokens) {
-            $intersection = $QueryTokens | Where-Object { $_ -in $entryTokens }
-            $union = ($QueryTokens + $entryTokens) | Select-Object -Unique
+            $intersection = @($QueryTokens | Where-Object { $_ -in $entryTokens })
+            $union = @(($QueryTokens + $entryTokens) | Select-Object -Unique)
             
             if ($union.Count -gt 0) {
                 $jaccard = $intersection.Count / $union.Count
@@ -88,22 +88,22 @@ function Invoke-ScoreCandidates {
             $confidence = [math]::Min(100, [math]::Round($score * 10))
             
             $scoredResults += [PSCustomObject]@{
-                Title = $entry.Title
-                Source = $entry.Source
-                Url = $entry.Url
-                Confidence = $confidence
+                Title         = $entry.Title
+                Source        = $entry.Source
+                Url           = $entry.Url
+                Confidence    = $confidence
                 MatchedTokens = ($matchedTokens | Select-Object -Unique) -join ', '
-                MatchReason = $matchReasons -join ' | '
-                FixSummary = $entry.FixSummary
-                FixSteps = $entry.FixSteps
-                Snippet = if ($entry.Content.Length -gt 300) { $entry.Content.Substring(0, 300) + '...' } else { $entry.Content }
-                RawScore = $score
+                MatchReason   = $matchReasons -join ' | '
+                FixSummary    = $entry.FixSummary
+                FixSteps      = $entry.FixSteps
+                Snippet       = if ($entry.Content.Length -gt 300) { $entry.Content.Substring(0, 300) + '...' } else { $entry.Content }
+                RawScore      = $score
             }
         }
     }
 
     # Sort by score descending and return top N
-    $rankedResults = $scoredResults | Sort-Object -Property RawScore -Descending | Select-Object -First $Top
+    $rankedResults = @($scoredResults | Sort-Object -Property RawScore -Descending | Select-Object -First $Top)
     
     # Remove RawScore from output
     foreach ($result in $rankedResults) {

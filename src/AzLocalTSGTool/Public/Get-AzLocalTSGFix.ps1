@@ -115,31 +115,63 @@ function Get-AzLocalTSGFix {
             Write-Host "    Match:      $($result.MatchReason)" -ForegroundColor Gray
 
             if ($result.FixSummary) {
-                Write-Host "    Fix:        $($result.FixSummary)" -ForegroundColor Yellow
+                Write-Host ""
+                Write-Host "    Summary:" -ForegroundColor Yellow
+                Write-Host "    $($result.FixSummary)" -ForegroundColor Gray
             }
 
             if ($result.FixSteps -and $result.FixSteps.Count -gt 0) {
-                Write-Host "    Steps:" -ForegroundColor Yellow
-                $stepsToShow = [Math]::Min(3, $result.FixSteps.Count)
+                Write-Host ""
+                Write-Host "    Fix Steps:" -ForegroundColor Yellow
+                Write-Host "    ==========" -ForegroundColor Yellow
+                
+                $stepsToShow = [Math]::Min(5, $result.FixSteps.Count)
                 for ($j = 0; $j -lt $stepsToShow; $j++) {
-                    Write-Host "      $($j + 1). $($result.FixSteps[$j])" -ForegroundColor Gray
+                    $step = $result.FixSteps[$j]
+                    
+                    if ($step.Type -eq 'Code') {
+                        Write-Host ""
+                        Write-Host "    Step $($step.Number): Run this PowerShell code" -ForegroundColor Cyan
+                        Write-Host ("    " + ("-" * 60)) -ForegroundColor DarkGray
+                        
+                        # Display code with proper formatting
+                        $codeLines = $step.Content -split "`n"
+                        $linesToShow = [Math]::Min(15, $codeLines.Count)
+                        
+                        for ($k = 0; $k -lt $linesToShow; $k++) {
+                            Write-Host "    $($codeLines[$k])" -ForegroundColor White
+                        }
+                        
+                        if ($codeLines.Count -gt 15) {
+                            Write-Host "    ... ($($codeLines.Count - 15) more lines)" -ForegroundColor DarkGray
+                        }
+                        Write-Host ("    " + ("-" * 60)) -ForegroundColor DarkGray
+                    } elseif ($step.Type -eq 'Text') {
+                        Write-Host ""
+                        Write-Host "    Step $($step.Number): $($step.Content)" -ForegroundColor White
+                    }
                 }
-                if ($result.FixSteps.Count -gt 3) {
-                    Write-Host "      ... ($($result.FixSteps.Count - 3) more steps, see URL)" -ForegroundColor DarkGray
+                
+                if ($result.FixSteps.Count -gt 5) {
+                    Write-Host ""
+                    Write-Host "    ... ($($result.FixSteps.Count - 5) more steps - see full TSG)" -ForegroundColor DarkGray
                 }
             }
 
-            Write-Host "    Read more:  " -NoNewline -ForegroundColor Cyan
+            Write-Host ""
+            Write-Host "    Full TSG: " -NoNewline -ForegroundColor Cyan
             Write-Host $result.Url -ForegroundColor Blue
+            Write-Host ""
+            Write-Host "    " + ("=" * 80) -ForegroundColor DarkGray
             Write-Host ""
         }
 
-        Write-Host "==> Next Steps:" -ForegroundColor Yellow
-        Write-Host "  1. Review the results above (highest confidence = best match)" -ForegroundColor Gray
-        Write-Host "  2. Click the blue 'Read more' URLs for full troubleshooting steps" -ForegroundColor Gray
-        Write-Host "  3. Follow the documented fixes" -ForegroundColor Gray
+        Write-Host "==> Action Required:" -ForegroundColor Yellow
+        Write-Host "  1. Review the fix steps above (start with highest confidence match)" -ForegroundColor Gray
+        Write-Host "  2. Copy and run the PowerShell code blocks in order" -ForegroundColor Gray
+        Write-Host "  3. For complete details, open the 'Full TSG' link" -ForegroundColor Gray
         Write-Host ""
-        Write-Host "Tip: Use -Top 3 to see fewer results, or try more specific error text" -ForegroundColor DarkGray
+        Write-Host "Tip: Use -Top 5 to see more results, or refine your error text for better matches" -ForegroundColor DarkGray
         Write-Host ""
 
         # Return nothing to avoid duplicate output

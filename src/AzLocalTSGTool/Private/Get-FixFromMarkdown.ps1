@@ -103,29 +103,33 @@ function Get-FixFromMarkdown {
         $fixSectionContent += $currentSection
     }
 
-    # Extract steps from fix section content
+    # Extract steps from fix section content - prioritize code blocks as complete steps
     $steps = @()
     $inExtractCodeBlock = $false
     $currentCodeBlock = @()
+    $stepCounter = 0
     
     foreach ($line in $fixSectionContent) {
         # Handle code blocks
         if ($line.Trim() -match '^```') {
             if ($inExtractCodeBlock) {
-                # End of code block - add as a single step
+                # End of code block - process it
                 if (@($currentCodeBlock).Count -gt 0) {
-                    # Get first few non-comment, non-empty lines
-                    $codeLines = $currentCodeBlock | Where-Object { 
+                    # Clean up code: remove comments, empty lines, join into logical commands
+                    $cleanedCode = $currentCodeBlock | Where-Object { 
                         $_.Trim() -ne '' -and 
                         -not ($_.TrimStart() -match '^#[^!]') 
-                    } | Select-Object -First 5
+                    }
                     
-                    if (@($codeLines).Count -gt 0) {
-                        $codeText = $codeLines -join "`n"
-                        if ($codeText.Length -gt 150) {
-                            $codeText = $codeText.Substring(0, 147) + '...'
+                    if (@($cleanedCode).Count -gt 0) {
+                        $stepCounter++
+                        # Create a structured step with the full code block
+                        $codeStep = [PSCustomObject]@{
+                            Number  = $stepCounter
+                            Type    = 'Code'
+                            Content = $cleanedCode -join "`n"
                         }
-                        $steps += "Run PowerShell: $codeText"
+                        $steps += $codeStep
                     }
                 }
                 $currentCodeBlock = @()
@@ -141,17 +145,36 @@ function Get-FixFromMarkdown {
             continue
         }
 
+        # Look for narrative instructions between code blocks
+        # Lines starting with "Then" or "Next" or "Now" - these are important transitions
+        if ($line -match '^\s*(Then|Next|Now|After|Finally)\s+(.+)$') {
+            $stepCounter++
+            $textStep = [PSCustomObject]@{
+                Number  = $stepCounter
+                Type    = 'Text'
+                Content = $matches[2].Trim()
+            }
+            $steps += $textStep
+        }
         # Numbered list item (e.g., "1. Step one")
-        if ($line -match '^\s*\d+\.\s+(.+)$') {
-            $steps += $matches[1].Trim()
+        elseif ($line -match '^\s*\d+\.\s+(.+)$') {
+            $stepCounter++
+            $textStep = [PSCustomObject]@{
+                Number  = $stepCounter
+                Type    = 'Text'
+                Content = $matches[1].Trim()
+            }
+            $steps += $textStep
         }
         # Bullet list item (e.g., "- Step one" or "* Step one")
         elseif ($line -match '^\s*[-*]\s+(.+)$') {
-            $steps += $matches[1].Trim()
-        }
-        # Lines starting with "Then" or "Next" or "Now"
-        elseif ($line -match '^\s*(Then|Next|Now|After|Finally)\s+(.+)$') {
-            $steps += $matches[2].Trim()
+            $stepCounter++
+            $textStep = [PSCustomObject]@{
+                Number  = $stepCounter
+                Type    = 'Text'
+                Content = $matches[1].Trim()
+            }
+            $steps += $textStep
         }
     }
 

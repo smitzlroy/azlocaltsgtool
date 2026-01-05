@@ -114,6 +114,13 @@ function Get-AzLocalTSGFix {
             Write-Host "FIX #$rank" -ForegroundColor Cyan -NoNewline
             Write-Host " - $($result.Title)" -ForegroundColor White
             Write-Host "Match: $($result.Confidence)%" -ForegroundColor DarkGray
+            Write-Host ""
+            
+            # Show clickable URL first
+            $esc = [char]27
+            $url = $result.Url
+            $clickableUrl = "$esc]8;;$url$esc\Full guide: $url$esc]8;;$esc\"
+            Write-Host $clickableUrl -ForegroundColor Cyan
             
             # Show brief summary if available
             if ($result.FixSummary) {
@@ -149,16 +156,9 @@ function Get-AzLocalTSGFix {
                 }
             } else {
                 Write-Host "No automated fix steps found." -ForegroundColor DarkGray
-                Write-Host "See full guide for manual troubleshooting." -ForegroundColor DarkGray
+                Write-Host "See full guide above for manual troubleshooting." -ForegroundColor DarkGray
                 Write-Host ""
             }
-
-            # Make URL clickable using ANSI escape codes (OSC 8 hyperlink format)
-            $esc = [char]27
-            $url = $result.Url
-            $clickableUrl = "$esc]8;;$url$esc\Full guide: $url$esc]8;;$esc\"
-            Write-Host $clickableUrl -ForegroundColor Cyan
-            Write-Host ""
         }
 
         Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray

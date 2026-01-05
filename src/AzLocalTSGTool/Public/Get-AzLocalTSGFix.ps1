@@ -151,7 +151,8 @@ function Get-AzLocalTSGFix {
                     Write-Host ""
                 }
             } else {
-                Write-Host "See full guide for fix steps" -ForegroundColor DarkGray
+                Write-Host "No automated fix steps found in this TSG." -ForegroundColor DarkGray
+                Write-Host "Check the full guide below for manual troubleshooting steps." -ForegroundColor DarkGray
                 Write-Host ""
             }
 

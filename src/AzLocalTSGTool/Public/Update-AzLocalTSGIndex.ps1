@@ -48,6 +48,12 @@ function Update-AzLocalTSGIndex {
     $indexEntries = @()
 
     foreach ($doc in $allDocuments) {
+        # Skip README files and template files - they're not actual TSGs
+        if ($doc.Title -match '^README$|^bug_report$|^feature_request$|ISSUE_TEMPLATE') {
+            Write-Verbose "Skipping non-TSG file: $($doc.Title)"
+            continue
+        }
+
         Write-Verbose "Indexing: $($doc.Title)"
 
         # Normalize tokens from content

@@ -1,6 +1,6 @@
 ﻿@{
     RootModule        = 'AzLocalTSGTool.psm1'
-    ModuleVersion     = '0.3.1'
+    ModuleVersion     = '0.3.2'
     GUID              = '7a3e5c8f-9d1b-4e2a-8f7c-6b5d4a3e2f1c'
     Author            = 'AzLocalTSGTool Contributors'
     CompanyName       = 'Community'
@@ -24,7 +24,7 @@
             Tags         = @('Azure', 'AzureLocal', 'AKS', 'AzureArc', 'Troubleshooting', 'TSG', 'Supportability')
             LicenseUri   = 'https://github.com/smitzlroy/azlocaltsgtool/blob/main/LICENSE'
             ProjectUri   = 'https://github.com/smitzlroy/azlocaltsgtool'
-            ReleaseNotes = 'v0.3.1: Added index freshness checking. Module now warns on import if TSG index is stale (>7 days old). Use Test-AzLocalTSGIndexFreshness to manually check.'
+            ReleaseNotes = 'v0.3.2: Added traffic light color system for match confidence - best match is green, second is yellow, third and lower are red for easier prioritization.'
         }
     }
 }

@@ -118,7 +118,18 @@ function Get-AzLocalTSGFix {
             Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor DarkGray
             Write-Host "FIX #$rank" -ForegroundColor Cyan -NoNewline
             Write-Host " - $($result.Title)" -ForegroundColor White
-            Write-Host "Match: $($result.Confidence)%" -ForegroundColor DarkGray
+            
+            # Traffic light system for match confidence
+            $matchColor = 'Red'
+            if ($rank -eq 1) {
+                $matchColor = 'Green'  # Best match
+            } elseif ($rank -eq 2) {
+                $matchColor = 'Yellow'  # Second best
+            }
+            # Third and beyond stay Red
+            
+            Write-Host "Match: " -ForegroundColor Gray -NoNewline
+            Write-Host "$($result.Confidence)%" -ForegroundColor $matchColor
             Write-Host ""
             
             # Show clickable URL first

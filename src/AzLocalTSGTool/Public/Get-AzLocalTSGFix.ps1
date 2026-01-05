@@ -114,6 +114,12 @@ function Get-AzLocalTSGFix {
             Write-Host "FIX #$rank" -ForegroundColor Cyan -NoNewline
             Write-Host " - $($result.Title)" -ForegroundColor White
             Write-Host "Match: $($result.Confidence)%" -ForegroundColor DarkGray
+            
+            # Show brief summary if available
+            if ($result.FixSummary) {
+                Write-Host ""
+                Write-Host "$($result.FixSummary)" -ForegroundColor Gray
+            }
             Write-Host ""
 
             # Show fix steps if available
@@ -124,35 +130,36 @@ function Get-AzLocalTSGFix {
                     $step = $result.FixSteps[$j]
                     
                     if ($step.Type -eq 'Code') {
-                        Write-Host "STEP $($step.Number)" -ForegroundColor Yellow
+                        Write-Host "STEP $($step.Number): Run these commands" -ForegroundColor Yellow
                         Write-Host ""
                         
-                        # Show only the essential commands - first 5 lines
+                        # Show only the essential commands - first 5 lines with bullet points
                         $codeLines = $step.Content -split "`n"
                         $essentialLines = $codeLines | Where-Object { $_.Trim() -ne '' } | Select-Object -First 5
                         
                         foreach ($line in $essentialLines) {
-                            Write-Host "  $line" -ForegroundColor White
+                            Write-Host "  • $line" -ForegroundColor White
                         }
                         
                         if ($codeLines.Count -gt 5) {
-                            Write-Host "  ..." -ForegroundColor DarkGray
+                            $remaining = ($codeLines | Where-Object { $_.Trim() -ne '' }).Count - 5
+                            Write-Host "  • ... ($remaining more lines - see full guide)" -ForegroundColor DarkGray
                         }
                         Write-Host ""
                     } elseif ($step.Type -eq 'Text') {
-                        Write-Host "STEP $($step.Number)" -ForegroundColor Yellow
-                        Write-Host "  $($step.Content)" -ForegroundColor White
+                        Write-Host "STEP $($step.Number): " -ForegroundColor Yellow -NoNewline
+                        Write-Host "$($step.Content)" -ForegroundColor White
                         Write-Host ""
                     }
                 }
                 
                 if ($result.FixSteps.Count -gt 3) {
-                    Write-Host "... $($result.FixSteps.Count - 3) more steps (see full guide)" -ForegroundColor DarkGray
+                    Write-Host "+$($result.FixSteps.Count - 3) more steps - see full guide below" -ForegroundColor DarkGray
                     Write-Host ""
                 }
             } else {
-                Write-Host "No automated fix steps found in this TSG." -ForegroundColor DarkGray
-                Write-Host "Check the full guide below for manual troubleshooting steps." -ForegroundColor DarkGray
+                Write-Host "No automated fix steps found." -ForegroundColor DarkGray
+                Write-Host "See full guide for manual troubleshooting." -ForegroundColor DarkGray
                 Write-Host ""
             }
 

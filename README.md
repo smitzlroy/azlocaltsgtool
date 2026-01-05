@@ -58,29 +58,36 @@ Get-AzLocalTSGFix -ErrorText "AKS node NotReady" -Json
 ```powershell
 PS> Get-AzLocalTSGFix -ErrorText "Test-Cluster validation failed" -Top 1
 
-==> Found 1 matching issue(s):
+Found 1 potential fix(es)
 
-[1] Test-ServicesVersion-Failure-Mitigation-In-HealthCheck
-    Confidence: 16%
-    Match:      Token overlap: 2/4 query tokens matched | Fuzzy title match: 77%
-    Fix:        We will need to run this command
-    Steps:
-      1. Run PowerShell: Import-Module ECEClient
-         $eceClient = Create-ECEClusterServiceClient
-         $stampInformation = Get-StampInformation...
-      2. you will need to do the following:
-      3. Run PowerShell: $stampInformation = Get-StampInformation
-         $stampInformation.StampVersion...
-         ... (3 more steps, see URL)
-    Read more:  https://github.com/Azure/AzureLocal-Supportability/blob/main/TSG/...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FIX #1 - Test-ServicesVersion-Failure-Mitigation-In-HealthCheck
+Match: 16%
 
-==> Next Steps:
-  1. Review the results above (highest confidence = best match)
-  2. Click the blue 'Read more' URLs for full troubleshooting steps
-  3. Follow the documented fixes
+STEP 1
+
+  Import-Module ECEClient
+  $eceClient = Create-ECEClusterServiceClient
+  $stampInformation = Get-StampInformation
+  ...
+
+STEP 2
+  you will need to do the following:
+
+STEP 3
+
+  $stampInformation = Get-StampInformation
+  $stampInformation.StampVersion
+
+... 3 more steps (see full guide)
+
+Full guide: https://github.com/Azure/AzureLocal-Supportability/...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 Tip: Copy each step and run it in PowerShell | Use -Top 5 for more results
 ```
 
-**Key Feature:** The tool extracts actual PowerShell commands from TSG articles, not just links!
+**Simple, clean output - just copy and run each step!**
 
 ## How It Works
 

@@ -1,0 +1,13 @@
+{
+    "powershell.integratedConsole.suppressStartupBanner": true,
+    "powershell.powerShellDefaultVersion": "PowerShell (x64)",
+    "powershell.pester.useLegacyCodeLens": false,
+    "powershell.codeFormatting.preset": "OTBS",
+    "editor.formatOnSave": true,
+    "[powershell]": {
+        "editor.defaultFormatter": "ms-vscode.powershell",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "files.encoding": "utf8bom"
+    }
+}

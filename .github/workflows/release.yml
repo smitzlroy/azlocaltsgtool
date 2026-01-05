@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and Release
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bootstrap dependencies
+        shell: pwsh
+        run: |
+          Write-Host "Installing required modules..."
+          Install-Module -Name Pester -MinimumVersion 5.3.0 -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck
+          Install-Module -Name PSScriptAnalyzer -MinimumVersion 1.21.0 -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          Write-Host "Running tests before release..."
+          Invoke-Pester -Path ./tests -Output Detailed
+
+      - name: Build module
+        shell: pwsh
+        run: |
+          Write-Host "Building module..."
+          & ./tools/Build.ps1
+
+      - name: Create release package
+        shell: pwsh
+        run: |
+          Write-Host "Creating release package..."
+          $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          $zipName = "AzLocalTSGTool-$version.zip"
+          
+          Compress-Archive -Path ./out/AzLocalTSGTool/* -DestinationPath $zipName -Force
+          
+          Write-Host "✓ Created $zipName"
+          Write-Output "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
+          Write-Output "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.ZIP_NAME }}
+          body: |
+            ## AzLocalTSGTool ${{ env.VERSION }}
+            
+            PowerShell module for troubleshooting Azure Local and AKS enabled by Azure Arc issues.
+            
+            ### Installation
+            
+            1. Download `${{ env.ZIP_NAME }}`
+            2. Extract to your PowerShell modules directory:
+               - Windows: `$env:USERPROFILE\Documents\PowerShell\Modules\AzLocalTSGTool`
+               - Linux/macOS: `~/.local/share/powershell/Modules/AzLocalTSGTool`
+            3. Import the module: `Import-Module AzLocalTSGTool`
+            
+            ### Quick Start
+            
+            ```powershell
+            # Update index (first time)
+            Update-AzLocalTSGIndex -Source GitHub
+            
+            # Search for fixes
+            Get-AzLocalTSGFix -ErrorText "your error message"
+            ```
+            
+            See [README.md](https://github.com/smitzlroy/azlocaltsgtool/blob/main/README.md) for full documentation.
+          draft: false
+          prerelease: false

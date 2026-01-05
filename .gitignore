@@ -1,0 +1,32 @@
+# Build output
+out/
+
+# PowerShell Gallery publishing (not used, but ignore if present)
+*.nupkg
+
+# Cache and temp files
+*.tmp
+*.temp
+*.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/*.log
+.idea/
+
+# Test results
+TestResults/
+test-results.xml
+*.trx
+
+# PowerShell module output
+*.zip
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

@@ -11,10 +11,7 @@
     .\tools\Publish-ToPSGallery.ps1
 #>
 [CmdletBinding(SupportsShouldProcess)]
-param(
-    [Parameter()]
-    [switch]$WhatIf
-)
+param()
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -67,7 +64,7 @@ try {
 }
 
 # Publish
-if ($WhatIf) {
+if ($WhatIfPreference) {
     Write-Host "==> WhatIf: Would publish version $version" -ForegroundColor Yellow
     Write-Host ""
 } else {

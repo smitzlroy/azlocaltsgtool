@@ -11,11 +11,12 @@ Stop manually searching through docs. Get instant, ranked fixes for Azure Local 
 
 When you hit an error during Azure Local deployment or AKS Arc operations, you need answers **fast**. This tool:
 
-- 🔍 **Searches 167+ TSG documents** from Azure/AzureLocal-Supportability in seconds
-- 🎯 **Ranks results by relevance** with confidence scores and match explanations  
+- 🔍 **Searches 147 TSG documents** from Azure/AzureLocal-Supportability in seconds
+- 🎯 **Ranks results by relevance** with confidence scores
+- 📋 **Shows complete fix steps** - all PowerShell commands displayed in full, no truncation
+- 💡 **Meaningful context** - displays Overview/Symptoms summaries, not filler text
+- 🔗 **Clickable links** - direct access to full GitHub guides
 - 💾 **Works offline** after initial index build - no repeated API calls
-- 🧠 **Smart token matching** - handles error codes, fault types, and technical identifiers
-- ⚡ **Extracts actual fix commands** - shows PowerShell commands from code blocks, not just links
 
 ## Installation
 

@@ -196,22 +196,46 @@ function Get-FixFromMarkdown {
         }
     }
 
-    # Create fix summary (first non-empty paragraph or contextual text in fix section)
+    # Create fix summary - prioritize Overview/Symptoms sections for meaningful context
     $summary = ''
     
-    # Prefer context text if we have any
-    if (@($contextText).Count -gt 0) {
-        $summary = $contextText[0]
-        if ($summary.Length -gt 200) {
-            $summary = $summary.Substring(0, 197) + '...'
+    # First, check the broader markdown for overview/symptoms sections
+    $allLines = $MarkdownContent -split "`r?`n"
+    $inOverview = $false
+    foreach ($line in $allLines) {
+        # Look for Overview, Symptoms, Issue, or Cause headings
+        if ($line -match '^#{1,6}\s+(Overview|Symptoms?|Issue|Cause|Description)') {
+            $inOverview = $true
+            continue
         }
-    } else {
-        # Otherwise use first non-empty paragraph
+        # Stop at next heading
+        if ($inOverview -and $line -match '^#{1,6}\s+') {
+            break
+        }
+        # Collect first meaningful paragraph
+        if ($inOverview -and -not [string]::IsNullOrWhiteSpace($line) -and 
+            $line -notmatch '^#{1,6}\s' -and 
+            $line.Trim() -notmatch '^```' -and
+            $line.TrimStart() -notmatch '^>' -and
+            $line.Length -gt 30) {
+            $summary = $line.Trim()
+            if ($summary.Length -gt 200) {
+                $summary = $summary.Substring(0, 197) + '...'
+            }
+            break
+        }
+    }
+    
+    # Fallback: try to find a good descriptive paragraph from fix section
+    if ([string]::IsNullOrWhiteSpace($summary)) {
         foreach ($line in $fixSectionContent) {
             if (-not [string]::IsNullOrWhiteSpace($line) -and 
                 $line -notmatch '^\s*[-*\d]' -and 
                 $line -notmatch '^#{1,6}\s' -and 
-                $line.Trim() -notmatch '^```') {
+                $line.Trim() -notmatch '^```' -and
+                $line.TrimStart() -notmatch '^>' -and
+                $line -inotmatch '(we will need|you will need|you must|you should|do the following|follow these|complete the|perform the|then you|^check )' -and
+                $line.Length -gt 30) {
                 $summary = $line.Trim()
                 if ($summary.Length -gt 200) {
                     $summary = $summary.Substring(0, 197) + '...'

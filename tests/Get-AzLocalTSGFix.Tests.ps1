@@ -20,13 +20,6 @@ Describe 'Get-AzLocalTSGFix' {
             $param.ParameterType | Should -Be ([int])
         }
 
-        It 'Should have Source parameter with valid set' {
-            $param = (Get-Command Get-AzLocalTSGFix).Parameters['Source']
-            $param.Attributes.ValidValues | Should -Contain 'GitHub'
-            $param.Attributes.ValidValues | Should -Contain 'AzureDevOpsWiki'
-            $param.Attributes.ValidValues | Should -Contain 'All'
-        }
-
         It 'Should have UpdateCache switch' {
             Get-Command Get-AzLocalTSGFix | Should -HaveParameter UpdateCache -Type switch
         }
@@ -41,8 +34,7 @@ Describe 'Get-AzLocalTSGFix' {
             # Clear cache for this test
             $cacheRoot = if ($IsWindows -or $null -eq $IsWindows) {
                 Join-Path $env:LOCALAPPDATA 'AzLocalTSGTool'
-            }
-            else {
+            } else {
                 Join-Path $HOME '.azlocaltsgtool'
             }
             
@@ -66,7 +58,7 @@ Describe 'Get-AzLocalTSGFix' {
             Mock -ModuleName AzLocalTSGTool Load-Index { return @() }
             
             { Get-AzLocalTSGFix -ErrorText "Microsoft.Health.FaultType.Cluster.ValidationReport.Failed" -WarningAction SilentlyContinue } | 
-                Should -Not -Throw
+            Should -Not -Throw
         }
     }
 }

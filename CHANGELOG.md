@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release of AzLocalTSGTool
 - `Update-AzLocalTSGIndex` cmdlet for building local search index
   - Support for GitHub source (Azure/AzureLocal-Supportability)
-  - Support for Azure DevOps Wiki source (with AZDO_PAT)
   - Local caching for offline access
 - `Get-AzLocalTSGFix` cmdlet for searching known issues
   - Text input via `-ErrorText` parameter
@@ -21,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Confidence scoring with match explanations
   - Automatic fix step extraction from markdown
   - JSON output support for automation
-  - Source filtering (GitHub, AzureDevOpsWiki, All)
 - Token normalization with support for dot-delimited identifiers
 - Fuzzy matching using Jaro-Winkler algorithm
 - VS Code workspace configuration

@@ -6,13 +6,6 @@
 
 Describe 'Update-AzLocalTSGIndex' {
     Context 'Parameter validation' {
-        It 'Should have Source parameter with valid set' {
-            $param = (Get-Command Update-AzLocalTSGIndex).Parameters['Source']
-            $param.Attributes.ValidValues | Should -Contain 'GitHub'
-            $param.Attributes.ValidValues | Should -Contain 'AzureDevOpsWiki'
-            $param.Attributes.ValidValues | Should -Contain 'All'
-        }
-
         It 'Should have Force switch' {
             Get-Command Update-AzLocalTSGIndex | Should -HaveParameter Force -Type switch
         }
@@ -42,25 +35,10 @@ Describe 'Update-AzLocalTSGIndex' {
         }
     }
 
-    Context 'Azure DevOps Wiki source' {
-        It 'Should warn when AZDO_PAT is not set' {
-            # Temporarily clear AZDO_PAT
-            $oldPat = $env:AZDO_PAT
-            $env:AZDO_PAT = $null
-            
-            try {
-                $result = Update-AzLocalTSGIndex -Source AzureDevOpsWiki -WarningVariable warnings 3>$null
-                $warnings | Should -Not -BeNullOrEmpty
-            } finally {
-                $env:AZDO_PAT = $oldPat
-            }
-        }
-    }
-
     Context 'Index persistence' {
         It 'Should save index to cache' {
             # Run update (may or may not succeed depending on network/auth)
-            Update-AzLocalTSGIndex -Source GitHub -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+            Update-AzLocalTSGIndex -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
 
             # Check if index.json exists (even if empty)
             $cacheRoot = if ($IsWindows -or $null -eq $IsWindows) {

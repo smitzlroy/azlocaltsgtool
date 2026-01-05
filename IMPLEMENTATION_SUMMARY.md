@@ -25,15 +25,10 @@
   - Supports GITHUB_TOKEN for rate limit increase
   - Fetches all markdown files recursively
   - **VERIFIED WORKING**: Successfully fetched 167 documents in testing
-- ✅ Azure DevOps Wiki fetch (Invoke-AzDoWikiFetch)
-  - Uses Azure DevOps REST API
-  - Requires AZDO_PAT environment variable
-  - Filters for TSG-related pages
-  - Gracefully handles missing credentials
 
 ### Phase 3: Public Commands ✓
 - ✅ `Update-AzLocalTSGIndex`
-  - Fetches from GitHub, Azure DevOps Wiki, or both
+  - Fetches from GitHub
   - Builds local searchable index
   - Caches documents for offline use
   - Extracts fix steps automatically
@@ -44,7 +39,6 @@
   - Returns ranked results with confidence scores
   - Displays fix steps inline
   - Supports `-Json` output for automation
-  - Source filtering (GitHub/AzureDevOpsWiki/All)
 
 ### Phase 4: Testing & Quality ✓
 - ✅ Pester tests for both public cmdlets
@@ -64,7 +58,6 @@ Tests Passed: 12, Failed: 2, Skipped: 0
 - ✅ GitHub fetch (167 documents successfully fetched)
 - ✅ Index building and persistence
 - ✅ Cache directory creation
-- ✅ AZDO_PAT validation
 - ✅ Module build and packaging
 
 ### Minor Issues (Non-blocking):
@@ -90,11 +83,10 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\InstallLocal.ps1
 ```powershell
 # 1. Set optional environment variables
 $env:GITHUB_TOKEN = "ghp_your_token"  # Optional: higher rate limits
-$env:AZDO_PAT = "your_pat"            # Optional: ADO Wiki access
 
 # 2. Import and update index
 Import-Module AzLocalTSGTool -Force
-Update-AzLocalTSGIndex -Source GitHub
+Update-AzLocalTSGIndex
 
 # 3. Search for fixes
 Get-AzLocalTSGFix -ErrorText "Microsoft.Health.FaultType.Cluster.ValidationReport.Failed"
@@ -180,9 +172,10 @@ azlocaltsgtool/
 ## 🔒 Security
 
 - ✅ No hardcoded credentials
-- ✅ Environment variable support (GITHUB_TOKEN, AZDO_PAT)
+- ✅ Environment variable support (GITHUB_TOKEN)
 - ✅ Secrets never cached
 - ✅ HTTPS-only connections
+- ✅ No internal/private URLs exposed
 
 ## 📝 Next Steps (Future Enhancements)
 

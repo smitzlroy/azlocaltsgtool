@@ -1,6 +1,6 @@
 # AzLocalTSGTool
 
-PowerShell module for rapidly troubleshooting Azure Local and AKS enabled by Azure Arc issues. Searches known issues and fixes from Azure DevOps Wiki TSG pages and GitHub supportability content.
+PowerShell module for rapidly troubleshooting Azure Local and AKS enabled by Azure Arc issues. Searches known issues and fixes from GitHub supportability content.
 
 ## Why AzLocalTSGTool?
 
@@ -16,7 +16,6 @@ Manual searching through documentation is slow and error-prone. AzLocalTSGTool:
 - PowerShell 7.0+ (pwsh) recommended
 - Internet connection for initial index update
 - Optional: `GITHUB_TOKEN` for higher GitHub API rate limits
-- Optional: `AZDO_PAT` for Azure DevOps Wiki access
 
 ## Quick Start
 
@@ -57,25 +56,13 @@ For higher GitHub API rate limits:
 $env:GITHUB_TOKEN = "ghp_your_token_here"
 ```
 
-For Azure DevOps Wiki access:
-
-```powershell
-$env:AZDO_PAT = "your_personal_access_token"
-```
-
 ### 5. Update Index
 
 First time (or to refresh):
 
 ```powershell
 Import-Module AzLocalTSGTool -Force
-Update-AzLocalTSGIndex -Source GitHub
-```
-
-Or for all sources (requires `AZDO_PAT`):
-
-```powershell
-Update-AzLocalTSGIndex -Source All
+Update-AzLocalTSGIndex
 ```
 
 ### 6. Search for Fixes
@@ -110,11 +97,7 @@ Get-AzLocalTSGFix -ErrorText "cluster validation failed" -UpdateCache
 Get-AzLocalTSGFix -Path ".\error.log" -Top 10
 ```
 
-### Filter by Source
 
-```powershell
-Get-AzLocalTSGFix -ErrorText "storage error" -Source GitHub
-```
 
 ### JSON Output for Automation
 
@@ -122,10 +105,10 @@ Get-AzLocalTSGFix -ErrorText "storage error" -Source GitHub
 Get-AzLocalTSGFix -ErrorText "deployment timeout" -Json | Out-File results.json
 ```
 
-### Update Index from Specific Source
+### Update Index with Force Refresh
 
 ```powershell
-Update-AzLocalTSGIndex -Source AzureDevOpsWiki -Force
+Update-AzLocalTSGIndex -Force
 ```
 
 ## VS Code Tasks
@@ -209,7 +192,6 @@ azlocaltsgtool/
 │           ├── Cache.ps1
 │           ├── ConvertTo-NormalizedTokens.ps1
 │           ├── Get-FixFromMarkdown.ps1
-│           ├── Invoke-AzDoWikiFetch.ps1
 │           ├── Invoke-FuzzyScore.ps1
 │           ├── Invoke-GitHubFetch.ps1
 │           ├── Invoke-ScoreCandidates.ps1
@@ -292,15 +274,11 @@ Triggers on `v*` tags:
 
 ### "Index is empty"
 
-Run `Update-AzLocalTSGIndex -Source GitHub` first.
+Run `Update-AzLocalTSGIndex` first.
 
 ### GitHub API rate limit errors
 
 Set `$env:GITHUB_TOKEN` with a GitHub personal access token.
-
-### Azure DevOps Wiki not fetching
-
-Ensure `$env:AZDO_PAT` is set with a PAT that has Read permissions for Wiki.
 
 ### PSScriptAnalyzer errors
 

@@ -5,7 +5,7 @@
     Author            = 'AzLocalTSGTool Contributors'
     CompanyName       = 'Community'
     Copyright         = '(c) 2026 AzLocalTSGTool Contributors. All rights reserved.'
-    Description       = 'PowerShell module for troubleshooting Azure Local and AKS enabled by Azure Arc issues. Searches known issues and fixes from Azure DevOps Wiki TSG pages and GitHub supportability content.'
+    Description       = 'PowerShell module for troubleshooting Azure Local and AKS enabled by Azure Arc issues. Searches known issues and fixes from GitHub supportability content.'
     PowerShellVersion = '7.0'
     
     FunctionsToExport = @(

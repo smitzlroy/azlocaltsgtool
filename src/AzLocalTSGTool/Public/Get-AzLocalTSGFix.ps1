@@ -10,8 +10,6 @@
     Path to a log file containing errors.
 .PARAMETER Top
     Number of top results to return (default: 5).
-.PARAMETER Source
-    Filter results by source: GitHub, AzureDevOpsWiki, or All (default: All).
 .PARAMETER UpdateCache
     Update the index before searching.
 .PARAMETER Json
@@ -39,10 +37,6 @@ function Get-AzLocalTSGFix {
         [int]$Top = 5,
 
         [Parameter()]
-        [ValidateSet('GitHub', 'AzureDevOpsWiki', 'All')]
-        [string]$Source = 'All',
-
-        [Parameter()]
         [switch]$UpdateCache,
 
         [Parameter()]
@@ -55,15 +49,14 @@ function Get-AzLocalTSGFix {
     # Update cache if requested
     if ($UpdateCache) {
         Write-Host "==> Updating index..." -ForegroundColor Cyan
-        Update-AzLocalTSGIndex -Source $Source
+        Update-AzLocalTSGIndex -Force:$Force
         Write-Host ""
     }
 
     # Read input
     $inputText = if ($PSCmdlet.ParameterSetName -eq 'File') {
         Read-LogInput -Path $Path
-    }
-    else {
+    } else {
         Read-LogInput -ErrorText $ErrorText
     }
 
@@ -86,17 +79,8 @@ function Get-AzLocalTSGFix {
         Write-Warning "Index is empty. Run 'Update-AzLocalTSGIndex' first to build the index."
         Write-Host ""
         Write-Host "Quick start:" -ForegroundColor Cyan
-        Write-Host "  Update-AzLocalTSGIndex -Source GitHub" -ForegroundColor Gray
+        Write-Host "  Update-AzLocalTSGIndex" -ForegroundColor Gray
         return
-    }
-
-    # Filter by source if specified
-    if ($Source -ne 'All') {
-        $indexEntries = $indexEntries | Where-Object { $_.Source -eq $Source }
-        if ($indexEntries.Count -eq 0) {
-            Write-Warning "No documents found for source: $Source"
-            return
-        }
     }
 
     Write-Verbose "Searching $($indexEntries.Count) indexed documents..."
@@ -110,15 +94,13 @@ function Get-AzLocalTSGFix {
         Write-Host "Suggestions:" -ForegroundColor Cyan
         Write-Host "  - Try different keywords or error codes" -ForegroundColor Gray
         Write-Host "  - Update the index: Update-AzLocalTSGIndex -Force" -ForegroundColor Gray
-        Write-Host "  - Check if AZDO_PAT is set for Azure DevOps Wiki content" -ForegroundColor Gray
         return
     }
 
     # Output results
     if ($Json) {
         return $results | ConvertTo-Json -Depth 10
-    }
-    else {
+    } else {
         Write-Host ""
         Write-Host "==> Found $($results.Count) matching issue(s):" -ForegroundColor Green
         Write-Host ""

@@ -24,14 +24,11 @@ cd azlocaltsgtool
 Build/refresh the local search index.
 
 ```powershell
-# First time - GitHub only (no auth required)
-Update-AzLocalTSGIndex -Source GitHub
-
-# Include Azure DevOps Wiki (requires AZDO_PAT)
-Update-AzLocalTSGIndex -Source All
+# Build/refresh the index
+Update-AzLocalTSGIndex
 
 # Force refresh
-Update-AzLocalTSGIndex -Source GitHub -Force
+Update-AzLocalTSGIndex -Force
 ```
 
 ### Get-AzLocalTSGFix
@@ -50,9 +47,6 @@ Get-AzLocalTSGFix -ErrorText "AKS node not ready" -Top 10
 # Update cache before searching
 Get-AzLocalTSGFix -ErrorText "storage error" -UpdateCache
 
-# Filter by source
-Get-AzLocalTSGFix -ErrorText "network issue" -Source GitHub
-
 # JSON output
 Get-AzLocalTSGFix -ErrorText "timeout" -Json
 ```
@@ -62,9 +56,6 @@ Get-AzLocalTSGFix -ErrorText "timeout" -Json
 ```powershell
 # Optional: Higher GitHub API rate limits (60/hr → 5000/hr)
 $env:GITHUB_TOKEN = "ghp_your_personal_access_token"
-
-# Optional: Azure DevOps Wiki access
-$env:AZDO_PAT = "your_azure_devops_pat"
 ```
 
 ## VS Code Tasks
@@ -88,7 +79,7 @@ $env:GITHUB_TOKEN = "ghp_..."
 Import-Module AzLocalTSGTool -Force
 
 # 3. Build index
-Update-AzLocalTSGIndex -Source GitHub
+Update-AzLocalTSGIndex
 
 # 4. Search
 Get-AzLocalTSGFix -ErrorText "your error here"
@@ -176,20 +167,13 @@ Contains:
 
 ### "Index is empty"
 ```powershell
-Update-AzLocalTSGIndex -Source GitHub
+Update-AzLocalTSGIndex
 ```
 
 ### GitHub API rate limit
 ```powershell
 $env:GITHUB_TOKEN = "ghp_your_token"
-Update-AzLocalTSGIndex -Source GitHub -Force
-```
-
-### Azure DevOps Wiki not fetching
-```powershell
-# Ensure PAT has Read permissions for Wiki
-$env:AZDO_PAT = "your_pat"
-Update-AzLocalTSGIndex -Source AzureDevOpsWiki
+Update-AzLocalTSGIndex -Force
 ```
 
 ### Module not found after install

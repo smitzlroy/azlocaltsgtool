@@ -111,10 +111,8 @@ function Get-AzLocalTSGFix {
 
             Write-Host "[$rank] " -NoNewline -ForegroundColor Cyan
             Write-Host $result.Title -ForegroundColor White
-            Write-Host "    Source:     $($result.Source)" -ForegroundColor Gray
             Write-Host "    Confidence: $($result.Confidence)%" -ForegroundColor $(if ($result.Confidence -ge 70) { 'Green' } elseif ($result.Confidence -ge 40) { 'Yellow' } else { 'Red' })
             Write-Host "    Match:      $($result.MatchReason)" -ForegroundColor Gray
-            Write-Host "    URL:        $($result.Url)" -ForegroundColor Cyan
 
             if ($result.FixSummary) {
                 Write-Host "    Fix:        $($result.FixSummary)" -ForegroundColor Yellow
@@ -131,9 +129,20 @@ function Get-AzLocalTSGFix {
                 }
             }
 
+            Write-Host "    Read more:  " -NoNewline -ForegroundColor Cyan
+            Write-Host $result.Url -ForegroundColor Blue
             Write-Host ""
         }
 
-        return $results
+        Write-Host "==> Next Steps:" -ForegroundColor Yellow
+        Write-Host "  1. Review the results above (highest confidence = best match)" -ForegroundColor Gray
+        Write-Host "  2. Click the blue 'Read more' URLs for full troubleshooting steps" -ForegroundColor Gray
+        Write-Host "  3. Follow the documented fixes" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Tip: Use -Top 3 to see fewer results, or try more specific error text" -ForegroundColor DarkGray
+        Write-Host ""
+
+        # Return nothing to avoid duplicate output
+        return
     }
 }

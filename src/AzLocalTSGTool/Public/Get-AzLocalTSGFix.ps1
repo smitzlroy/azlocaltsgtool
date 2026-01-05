@@ -125,25 +125,20 @@ function Get-AzLocalTSGFix {
             # Show fix steps if available
             if ($result.FixSteps -and $result.FixSteps.Count -gt 0) {
                 
-                $stepsToShow = [Math]::Min(3, $result.FixSteps.Count)
-                for ($j = 0; $j -lt $stepsToShow; $j++) {
-                    $step = $result.FixSteps[$j]
+                # Show ALL steps completely
+                foreach ($step in $result.FixSteps) {
                     
                     if ($step.Type -eq 'Code') {
                         Write-Host "STEP $($step.Number): Run these commands" -ForegroundColor Yellow
                         Write-Host ""
                         
-                        # Show only the essential commands - first 5 lines with bullet points
+                        # Show all commands with bullet points
                         $codeLines = $step.Content -split "`n"
-                        $essentialLines = $codeLines | Where-Object { $_.Trim() -ne '' } | Select-Object -First 5
                         
-                        foreach ($line in $essentialLines) {
-                            Write-Host "  • $line" -ForegroundColor White
-                        }
-                        
-                        if ($codeLines.Count -gt 5) {
-                            $remaining = ($codeLines | Where-Object { $_.Trim() -ne '' }).Count - 5
-                            Write-Host "  • ... ($remaining more lines - see full guide)" -ForegroundColor DarkGray
+                        foreach ($line in $codeLines) {
+                            if ($line.Trim() -ne '') {
+                                Write-Host "  • $line" -ForegroundColor White
+                            }
                         }
                         Write-Host ""
                     } elseif ($step.Type -eq 'Text') {
@@ -152,19 +147,17 @@ function Get-AzLocalTSGFix {
                         Write-Host ""
                     }
                 }
-                
-                if ($result.FixSteps.Count -gt 3) {
-                    Write-Host "+$($result.FixSteps.Count - 3) more steps - see full guide below" -ForegroundColor DarkGray
-                    Write-Host ""
-                }
             } else {
                 Write-Host "No automated fix steps found." -ForegroundColor DarkGray
                 Write-Host "See full guide for manual troubleshooting." -ForegroundColor DarkGray
                 Write-Host ""
             }
 
-            Write-Host "Full guide: " -NoNewline -ForegroundColor Cyan
-            Write-Host $result.Url -ForegroundColor Blue
+            # Make URL clickable using ANSI escape codes (OSC 8 hyperlink format)
+            $esc = [char]27
+            $url = $result.Url
+            $clickableUrl = "$esc]8;;$url$esc\Full guide: $url$esc]8;;$esc\"
+            Write-Host $clickableUrl -ForegroundColor Cyan
             Write-Host ""
         }
 

@@ -1,6 +1,6 @@
 ﻿@{
     RootModule        = 'AzLocalTSGTool.psm1'
-    ModuleVersion     = '0.3.0'
+    ModuleVersion     = '0.3.1'
     GUID              = '7a3e5c8f-9d1b-4e2a-8f7c-6b5d4a3e2f1c'
     Author            = 'AzLocalTSGTool Contributors'
     CompanyName       = 'Community'
@@ -12,6 +12,7 @@
         'Get-AzLocalTSGFix'
         'Update-AzLocalTSGIndex'
         'Get-AzLocalTSGTrends'
+        'Test-AzLocalTSGIndexFreshness'
     )
     
     CmdletsToExport   = @()
@@ -23,7 +24,7 @@
             Tags         = @('Azure', 'AzureLocal', 'AKS', 'AzureArc', 'Troubleshooting', 'TSG', 'Supportability')
             LicenseUri   = 'https://github.com/smitzlroy/azlocaltsgtool/blob/main/LICENSE'
             ProjectUri   = 'https://github.com/smitzlroy/azlocaltsgtool'
-            ReleaseNotes = 'v0.3.0: Added trend tracking and analytics. View search patterns, top errors, and documentation gaps with Get-AzLocalTSGTrends.'
+            ReleaseNotes = 'v0.3.1: Added index freshness checking. Module now warns on import if TSG index is stale (>7 days old). Use Test-AzLocalTSGIndexFreshness to manually check.'
         }
     }
 }

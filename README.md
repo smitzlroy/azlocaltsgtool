@@ -75,6 +75,25 @@ Get-AzLocalTSGTrends -DaysBack 90 -ExportPath ".\analytics.json"
 
 Use analytics to identify patterns and report documentation gaps to Microsoft!
 
+### 4. Check Index Freshness
+
+The module automatically checks if your index is stale when you import it. You can also manually check:
+
+```powershell
+# Check if index is up to date
+Test-AzLocalTSGIndexFreshness
+
+# Use custom staleness threshold (default is 7 days)
+Test-AzLocalTSGIndexFreshness -DaysStale 14
+
+# Silent check (returns true/false)
+if (-not (Test-AzLocalTSGIndexFreshness -Quiet)) {
+    Update-AzLocalTSGIndex
+}
+```
+
+**The module will warn you automatically on import if your index is more than 7 days old.**
+
 ## Example Output
 
 ```powershell
@@ -125,6 +144,7 @@ Full guide: https://github.com/Azure/AzureLocal-Supportability/...
 | `Update-AzLocalTSGIndex` | Fetch and index TSG documents from GitHub |
 | `Get-AzLocalTSGFix` | Search for fixes by error text or log file |
 | `Get-AzLocalTSGTrends` | View search analytics and identify documentation gaps |
+| `Test-AzLocalTSGIndexFreshness` | Check if the local index is up to date |
 
 ## Troubleshooting
 

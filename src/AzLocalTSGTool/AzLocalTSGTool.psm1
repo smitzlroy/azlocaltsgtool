@@ -30,4 +30,11 @@ if (Test-Path $PublicPath) {
 }
 
 # Export public functions (defined in manifest)
-Export-ModuleMember -Function 'Get-AzLocalTSGFix', 'Update-AzLocalTSGIndex', 'Get-AzLocalTSGTrends'
+Export-ModuleMember -Function 'Get-AzLocalTSGFix', 'Update-AzLocalTSGIndex', 'Get-AzLocalTSGTrends', 'Test-AzLocalTSGIndexFreshness'
+
+# Check index freshness on module load (suppress output if index is fresh)
+$null = Test-AzLocalTSGIndexFreshness -Quiet
+if (-not (Test-AzLocalTSGIndexFreshness -Quiet)) {
+    # Index is stale or missing - show warning
+    Test-AzLocalTSGIndexFreshness | Out-Null
+}

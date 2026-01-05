@@ -54,6 +54,27 @@ Get-AzLocalTSGFix -Path ".\deployment.log" -Top 5
 Get-AzLocalTSGFix -ErrorText "AKS node NotReady" -Json
 ```
 
+### 3. View Search Trends & Analytics
+
+```powershell
+# View analytics for last 30 days
+Get-AzLocalTSGTrends
+
+# Last 7 days
+Get-AzLocalTSGTrends -DaysBack 7
+
+# Export analytics to JSON
+Get-AzLocalTSGTrends -DaysBack 90 -ExportPath ".\analytics.json"
+```
+
+**Analytics show:**
+- 📊 Total searches and success rate
+- 🔥 Most frequently searched errors  
+- 📖 Most commonly matched TSGs
+- ❗ Documentation gaps (errors with no/poor matches)
+
+Use analytics to identify patterns and report documentation gaps to Microsoft!
+
 ## Example Output
 
 ```powershell
@@ -103,6 +124,7 @@ Full guide: https://github.com/Azure/AzureLocal-Supportability/...
 |---------|-------------|
 | `Update-AzLocalTSGIndex` | Fetch and index TSG documents from GitHub |
 | `Get-AzLocalTSGFix` | Search for fixes by error text or log file |
+| `Get-AzLocalTSGTrends` | View search analytics and identify documentation gaps |
 
 ## Troubleshooting
 

@@ -88,6 +88,11 @@ function Get-AzLocalTSGFix {
     # Score and rank candidates
     $results = @(Invoke-ScoreCandidates -QueryTokens $queryTokens -IndexEntries $indexEntries -Top $Top)
 
+    # Record analytics
+    $topMatch = if ($results.Count -gt 0) { $results[0].Title } else { $null }
+    $topConfidence = if ($results.Count -gt 0) { $results[0].Confidence } else { 0 }
+    Add-SearchAnalytics -ErrorText $ErrorText -ResultCount $results.Count -TopMatch $topMatch -TopConfidence $topConfidence
+
     if ($results.Count -eq 0) {
         Write-Warning "No matching issues found."
         Write-Host ""

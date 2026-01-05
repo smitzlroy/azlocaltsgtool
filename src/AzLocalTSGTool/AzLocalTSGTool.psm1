@@ -30,4 +30,4 @@ if (Test-Path $PublicPath) {
 }
 
 # Export public functions (defined in manifest)
-Export-ModuleMember -Function 'Get-AzLocalTSGFix', 'Update-AzLocalTSGIndex'
+Export-ModuleMember -Function 'Get-AzLocalTSGFix', 'Update-AzLocalTSGIndex', 'Get-AzLocalTSGTrends'

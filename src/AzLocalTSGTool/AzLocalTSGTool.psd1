@@ -1,6 +1,6 @@
 ﻿@{
     RootModule        = 'AzLocalTSGTool.psm1'
-    ModuleVersion     = '0.2.1'
+    ModuleVersion     = '0.3.0'
     GUID              = '7a3e5c8f-9d1b-4e2a-8f7c-6b5d4a3e2f1c'
     Author            = 'AzLocalTSGTool Contributors'
     CompanyName       = 'Community'
@@ -11,6 +11,7 @@
     FunctionsToExport = @(
         'Get-AzLocalTSGFix'
         'Update-AzLocalTSGIndex'
+        'Get-AzLocalTSGTrends'
     )
     
     CmdletsToExport   = @()
@@ -22,7 +23,7 @@
             Tags         = @('Azure', 'AzureLocal', 'AKS', 'AzureArc', 'Troubleshooting', 'TSG', 'Supportability')
             LicenseUri   = 'https://github.com/smitzlroy/azlocaltsgtool/blob/main/LICENSE'
             ProjectUri   = 'https://github.com/smitzlroy/azlocaltsgtool'
-            ReleaseNotes = 'v0.2.1: Full guide link moved to top for better context. Complete fix steps with meaningful summaries. Clickable URLs.'
+            ReleaseNotes = 'v0.3.0: Added trend tracking and analytics. View search patterns, top errors, and documentation gaps with Get-AzLocalTSGTrends.'
         }
     }
 }

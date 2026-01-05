@@ -105,6 +105,7 @@ function Get-FixFromMarkdown {
 
     # Extract steps from fix section content - prioritize code blocks as complete steps
     $steps = @()
+    $contextText = @()  # Collect descriptive text that's not a step
     $inExtractCodeBlock = $false
     $currentCodeBlock = @()
     $stepCounter = 0
@@ -145,9 +146,26 @@ function Get-FixFromMarkdown {
             continue
         }
 
+        # Skip headings, empty lines, and blockquotes (notes/context)
+        # Blockquotes (>) contain context/notes, not actionable steps
+        if ([string]::IsNullOrWhiteSpace($line) -or $line -match '^#{1,6}\s' -or $line.TrimStart() -match '^>') {
+            # If it's a blockquote, save stripped text as context
+            if ($line -match '^\s*>\s*(.+)$') {
+                $contextText += $matches[1].Trim()
+            }
+            continue
+        }
+        
+        # Skip descriptive/contextual text that shouldn't be a step
+        if ($line -imatch '(you will need|you must|you should|do the following|follow these|complete the|perform the|this (may|will|should)|check |below command|for more)') {
+            $contextText += $line.Trim()
+            continue
+        }
+
         # Look for narrative instructions between code blocks
-        # Lines starting with "Then" or "Next" or "Now" - these are important transitions
-        if ($line -match '^\s*(Then|Next|Now|After|Finally)\s+(.+)$') {
+        # Lines starting with "Then" or "Next" etc - BUT skip filler phrases like "Then you will need"
+        if ($line -match '^\s*(Then|Next|Now|After|Finally)\s+(.+)$' -and 
+            $line -inotmatch '(you will need|you must|you should|do the following)') {
             $stepCounter++
             $textStep = [PSCustomObject]@{
                 Number  = $stepCounter
@@ -178,18 +196,28 @@ function Get-FixFromMarkdown {
         }
     }
 
-    # Create fix summary (first non-empty paragraph in fix section)
+    # Create fix summary (first non-empty paragraph or contextual text in fix section)
     $summary = ''
-    foreach ($line in $fixSectionContent) {
-        if (-not [string]::IsNullOrWhiteSpace($line) -and 
-            $line -notmatch '^\s*[-*\d]' -and 
-            $line -notmatch '^#{1,6}\s' -and 
-            $line.Trim() -notmatch '^```') {
-            $summary = $line.Trim()
-            if ($summary.Length -gt 200) {
-                $summary = $summary.Substring(0, 197) + '...'
+    
+    # Prefer context text if we have any
+    if (@($contextText).Count -gt 0) {
+        $summary = $contextText[0]
+        if ($summary.Length -gt 200) {
+            $summary = $summary.Substring(0, 197) + '...'
+        }
+    } else {
+        # Otherwise use first non-empty paragraph
+        foreach ($line in $fixSectionContent) {
+            if (-not [string]::IsNullOrWhiteSpace($line) -and 
+                $line -notmatch '^\s*[-*\d]' -and 
+                $line -notmatch '^#{1,6}\s' -and 
+                $line.Trim() -notmatch '^```') {
+                $summary = $line.Trim()
+                if ($summary.Length -gt 200) {
+                    $summary = $summary.Substring(0, 197) + '...'
+                }
+                break
             }
-            break
         }
     }
 

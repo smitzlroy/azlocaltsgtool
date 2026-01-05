@@ -12,7 +12,7 @@ When you hit an error during Azure Local deployment or AKS Arc operations, you n
 - 🎯 **Ranks results by relevance** with confidence scores and match explanations  
 - 💾 **Works offline** after initial index build - no repeated API calls
 - 🧠 **Smart token matching** - handles error codes, fault types, and technical identifiers
-- 📋 **Extracts fix steps** automatically from markdown docs
+- ⚡ **Extracts actual fix commands** - shows PowerShell commands from code blocks, not just links
 
 ## Installation
 
@@ -68,23 +68,31 @@ Get-AzLocalTSGFix -ErrorText "AKS node NotReady" -Json
 ## Example Output
 
 ```powershell
-PS> Get-AzLocalTSGFix -ErrorText "Test-Cluster validation failed" -Top 3
+PS> Get-AzLocalTSGFix -ErrorText "Test-Cluster validation failed" -Top 1
 
-==> Found 3 matching issue(s):
+==> Found 1 matching issue(s):
 
 [1] Test-ServicesVersion-Failure-Mitigation-In-HealthCheck
-    Source:     GitHub
     Confidence: 16%
     Match:      Token overlap: 2/4 query tokens matched | Fuzzy title match: 77%
-    URL:        https://github.com/Azure/AzureLocal-Supportability/blob/main/TSG/...
     Fix:        We will need to run this command
+    Steps:
+      1. Run PowerShell: Import-Module ECEClient
+         $eceClient = Create-ECEClusterServiceClient
+         $stampInformation = Get-StampInformation...
+      2. you will need to do the following:
+      3. Run PowerShell: $stampInformation = Get-StampInformation
+         $stampInformation.StampVersion...
+         ... (3 more steps, see URL)
+    Read more:  https://github.com/Azure/AzureLocal-Supportability/blob/main/TSG/...
 
-[2] ImageRecipeValidationTests-failing
-    Source:     GitHub
-    Confidence: 15%
-    Match:      Token overlap: 3/4 query tokens matched | Fuzzy title match: 63%
-    URL:        https://github.com/Azure/AzureLocal-Supportability/blob/main/TSG/...
+==> Next Steps:
+  1. Review the results above (highest confidence = best match)
+  2. Click the blue 'Read more' URLs for full troubleshooting steps
+  3. Follow the documented fixes
 ```
+
+**Key Feature:** The tool extracts actual PowerShell commands from TSG articles, not just links!
 
 ## How It Works
 

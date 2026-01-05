@@ -1,5 +1,8 @@
 # AzLocalTSGTool
 
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/AzLocalTSGTool)](https://www.powershellgallery.com/packages/AzLocalTSGTool)
+[![PowerShell Gallery Downloads](https://img.shields.io/powershellgallery/dt/AzLocalTSGTool)](https://www.powershellgallery.com/packages/AzLocalTSGTool)
+
 > **Fast, intelligent troubleshooting for Azure Local and AKS enabled by Azure Arc**
 
 Stop manually searching through docs. Get instant, ranked fixes for Azure Local and AKS Arc errors using fuzzy search and local caching.
@@ -18,27 +21,12 @@ When you hit an error during Azure Local deployment or AKS Arc operations, you n
 
 **Prerequisites:** PowerShell 7.0+
 
-### Install from PowerShell Gallery
-
 ```powershell
 Install-Module -Name AzLocalTSGTool -Repository PSGallery -Scope CurrentUser
 Import-Module AzLocalTSGTool
 ```
 
-### Install from Source
-
-```powershell
-# Clone the repo
-git clone https://github.com/smitzlroy/azlocaltsgtool.git
-cd azlocaltsgtool
-
-# Build and install
-.\tools\Build.ps1
-.\tools\InstallLocal.ps1
-
-# Load the module
-Import-Module AzLocalTSGTool
-```
+That's it! The module is now available from [PowerShell Gallery](https://www.powershellgallery.com/packages/AzLocalTSGTool).
 
 ## Quick Start
 
@@ -115,31 +103,27 @@ PS> Get-AzLocalTSGFix -ErrorText "Test-Cluster validation failed" -Top 1
 | "Index is empty" | Run `Update-AzLocalTSGIndex` first |
 | GitHub rate limits | Set `$env:GITHUB_TOKEN` with a personal access token |
 | No results found | Try different keywords or update index with `-Force` |
+| Need PowerShell 7? | Install with: `winget install Microsoft.PowerShell` |
 
-## Development
+## Contributing
 
-Contributions welcome! This repo includes:
-
-- ✅ Pester tests in `src/AzLocalTSGTool/Tests/`
-- ✅ CI/CD via GitHub Actions  
-- ✅ VS Code tasks for quick workflows
+Contributions welcome! For development setup:
 
 ```powershell
-# Clone and setup
+# Clone the repository
 git clone https://github.com/smitzlroy/azlocaltsgtool.git
 cd azlocaltsgtool
-code .
 
 # Install dev dependencies
 .\tools\Bootstrap.ps1
 
-# Build and test
+# Build and test locally
 .\tools\Build.ps1
 .\tools\InstallLocal.ps1
-
-# Run tests
 Invoke-Pester -Path src/AzLocalTSGTool/Tests/
 ```
+
+This repo includes Pester tests, PSScriptAnalyzer linting, and GitHub Actions CI/CD.
 
 ## License
 
